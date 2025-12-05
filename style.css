@@ -1,0 +1,339 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #0e0e0e;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+/* ===== HEADER ===== */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 75px;
+  background: rgba(0,0,0,0.95); /* Aumentei opacidade para leitura */
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+  gap: 20px;
+  z-index: 100;
+  flex-wrap: nowrap;
+}
+
+/* Logo */
+.logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.9rem;
+  letter-spacing: 2px;
+  color: #fff;
+  flex: 0 0 auto;
+}
+
+/* SEARCH CENTER */
+.search-box {
+  flex: 1 1 420px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+
+.search-box input {
+  width: 100%;
+  max-width: 420px;
+  min-width: 120px;
+  padding: 8px 14px;
+  border-radius: 25px;
+  border: none;
+  background: #151515;
+  color: #fff;
+  outline: none;
+  transition: width .25s ease;
+  border: 1px solid #333;
+}
+
+/* RIGHT SECTION (Menu + User icon) */
+.right-side {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* NAV */
+nav ul {
+  display: flex;
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #D2BBA0;
+}
+
+/* Avatar */
+.header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+
+.header-avatar:hover {
+  transform: scale(1.08);
+}
+
+/* ------------------ RESPONSIVE ------------------ */
+@media (max-width: 860px) {
+  header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 12px 4%;
+    gap: 10px;
+  }
+
+  .logo { order: 1; }
+  .right-side { order: 2; margin-left: auto; }
+  .search-box { order: 3; width: 100%; }
+  .search-box input { max-width: none; width: 100%; }
+}
+
+/* ===== HERO ===== */
+.hero {
+  height: 100vh;
+  background: url('https://images.unsplash.com/photo-1606813909355-1015b9f6d6a5?auto=format&fit=crop&w=1800&q=80') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 0 10%;
+  position: relative;
+  background-attachment: fixed;
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  font-family: 'Oswald', sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  color: #fff;
+  letter-spacing: 2px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: #ccc;
+}
+
+.hero button {
+  padding: 1rem 2.5rem;
+  background: #D2BBA0;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+}
+
+.hero button:hover {
+  background: #fff;
+  color: #000;
+}
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 5rem 8%;
+  clear: both; /* Garante que nada flutue sobre as seções */
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-family: 'Oswald', sans-serif;
+  margin-bottom: 3rem;
+  text-transform: uppercase;
+}
+
+/* ===== PRODUCTS GRID ===== */
+.products {
+  display: grid;
+  /* Ajuste para evitar que um único produto fique gigante */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.product {
+  background: #1b1b1b;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.product:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(210, 187, 160, 0.2);
+}
+
+/* Título e Preço */
+.product h3 {
+  padding: 1rem 1rem 0.5rem;
+  font-size: 1.2rem;
+}
+
+.product p {
+  padding: 0 1rem 1rem;
+  color: #aaa;
+  font-weight: bold;
+}
+
+/* === CARD ESPECÍFICO: HOODIE & IMAGENS === */
+
+/* Contentor das imagens do Hoodie */
+.hoodie-images {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Altura fixa para o card */
+  background: #222;
+  overflow: hidden;
+}
+
+/* Regra para as imagens principais do Hoodie */
+.hoodie-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Garante que a imagem preencha sem deformar */
+  position: absolute; /* Sobrepõe as imagens */
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s ease;
+  display: none; /* Escondido por padrão, JS ativa */
+}
+
+/* A classe active é adicionada pelo JS */
+.hoodie-images img.active {
+  display: block; 
+}
+
+/* === OPÇÕES DE COR (Bolinhas) === */
+.color-options {
+  padding: 0 1rem;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* CORRIGIDO: Forçar tamanho pequeno para as bolinhas */
+.color-swatch {
+  width: 30px !important; /* Importante para sobrescrever regras genéricas */
+  height: 30px !important;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #555;
+  object-fit: cover;
+  transition: 0.2s;
+}
+
+.color-swatch:hover {
+  border: 2px solid #fff;
+  transform: scale(1.1);
+}
+
+/* === BOTÕES FRENTE/TRÁS === */
+.view-options {
+  padding: 0 1rem 1.5rem;
+  display: flex;
+  gap: 10px;
+}
+
+.view-options button {
+  padding: 6px 14px;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid #555;
+  color: #ccc;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  transition: 0.3s;
+}
+
+.view-options button:hover {
+  background: #D2BBA0;
+  color: #000;
+  border-color: #D2BBA0;
+}
+
+/* ===== ABOUT ===== */
+.about-text {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  color: #ccc;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: #111;
+  text-align: center;
+  padding: 2rem;
+  font-size: 0.9rem;
+  color: #777;
+  border-top: 1px solid #222;
+  margin-top: auto;
+}
+
+/* ===== ANIMAÇÕES ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
