@@ -191,7 +191,7 @@ section {
   text-transform: uppercase;
 }
 
-/* ===== PRODUCTS GRID ===== */
+/* ---- PRODUCTS GRID ----*/
 .products {
   display: grid;
   /* Ajuste para evitar que um único produto fique gigante */
@@ -228,7 +228,7 @@ section {
   font-weight: bold;
 }
 
-/* === CARD ESPECÍFICO: HOODIE & IMAGENS === */
+/* CARD ESPECÍFICO: HOODIE & IMAGENS */
 
 /* Contentor das imagens do Hoodie */
 .hoodie-images {

@@ -79,10 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar Hoodie
   updateHoodieImages();
 
-
-  // ==========================================
-  // LÓGICA DA T-SHIRT (Para recuperar o card)
-  // ==========================================
   // Nota: Tens de ter as imagens com estes nomes na pasta mockupsUV ou ajustar aqui
   const tshirtImages = {
     black: { front: "mockupsUV/tshirt_black_front.png", back: "mockupsUV/tshirt_black_back.png" },
