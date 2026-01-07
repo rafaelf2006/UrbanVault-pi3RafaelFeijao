@@ -1,3 +1,14 @@
+
+<?php
+session_start();
+require_once 'config.php'; // Liga à base de dados
+
+// Vai buscar os 4 produtos mais recentes
+$query = "SELECT * FROM products ORDER BY data_adicionado DESC LIMIT 4";
+$result = $conn->query($query);
+?>
+
+
 <?php
 session_start();
 ?>
