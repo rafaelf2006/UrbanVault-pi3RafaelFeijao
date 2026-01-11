@@ -1,16 +1,17 @@
-
 <?php
+
 session_start();
-require_once 'config.php'; // Liga à base de dados
 
-// Vai buscar os 4 produtos mais recentes
-$query = "SELECT * FROM products ORDER BY data_adicionado DESC LIMIT 4";
-$result = $conn->query($query);
-?>
-
-
-<?php
-session_start();
+/
+if (file_exists('db.php')) {
+    require_once 'db.php';
+    // Vai buscar os 4 produtos mais recentes
+    $query = "SELECT * FROM products ORDER BY data_adicionado DESC LIMIT 4";
+    $result = $conn->query($query);
+} else {
+    // Se o ficheiro não existir, cria um aviso para tu saberes
+    die("Erro Crítico: O ficheiro config.php não foi encontrado na pasta atual.");
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -60,45 +61,33 @@ session_start();
     <h2 class="section-title">Novidades</h2>
     <div class="products">
 
-      <div class="product reveal">
-        <div class="hoodie-images">
-          <img id="hoodie-front" src="mockupsUV/hoodie_black_front.png" alt="Hoodie Preto Frente">
-          <img id="hoodie-back" src="mockupsUV/hoodie_black_back.png" alt="Hoodie Preto Trás">
-        </div>
-        <h3>Hoodie UrbanVault</h3>
-        <p>€79,99</p>
+      <?php 
+      // 3. Verificar se a consulta correu bem e se há produtos
+      if(isset($result) && $result->num_rows > 0): 
+          while($row = $result->fetch_assoc()): 
+      ?>
+          <div class="product reveal">
+            <div class="hoodie-images">
+              <img src="<?php echo $row['imagem_url']; ?>" alt="<?php echo $row['nome']; ?>">
+            </div>
+            <h3><?php echo $row['nome']; ?></h3>
+            <p>€<?php echo number_format($row['preco'], 2, ',', '.'); ?></p>
+            
+            <a href="produto.php?id=<?php echo $row['id']; ?>">
+                <button class="view-btn">Ver Produto</button>
+            </a>
+          </div>
+      <?php 
+          endwhile; 
+      else:
+      ?>
+          <p>A carregar coleções...</p>
+      <?php endif; ?>
 
-        <div class="color-options">
-          <img class="color-swatch" src="mockupsUV/hoodie_black_front.png" alt="Preto" onclick="changeHoodieColor('black')">
-          <img class="color-swatch" src="mockupsUV/hoodie_white_front.png" alt="Branco" onclick="changeHoodieColor('white')">
-          <img class="color-swatch" src="mockupsUV/hoodie_green_front.png" alt="Verde" onclick="changeHoodieColor('green')">
-          <img class="color-swatch" src="mockupsUV/hoodie_wine_front.png" alt="Wine" onclick="changeHoodieColor('wine')">
-        </div>
+    </div>
+  </section>
 
-        <div class="view-options">
-          <button onclick="showFront()">Frente</button>
-          <button onclick="showBack()">Trás</button>
-        </div>
-      </div> 
-      <div class="product reveal">
-        <div class="hoodie-images"> 
-          <img id="tshirt-front" src="mockupsUV/tshirt_black_front.png" alt="T-shirt Frente">
-          <img id="tshirt-back" src="mockupsUV/tshirt_black_back.png" alt="T-shirt Trás">
-        </div>
-        <h3>T-Shirt UrbanVault</h3>
-        <p>€39,99</p>
-
-        <div class="color-options">
-          <img class="color-swatch" src="mockupsUV/tshirt_black_front.png" alt="Preto" onclick="changeTshirtColor('black')">
-          <img class="color-swatch" src="mockupsUV/tshirt_white_front.png" alt="Branco" onclick="changeTshirtColor('white')">
-        </div>
-
-        <div class="view-options">
-          <button onclick="showTshirtFront()">Frente</button>
-          <button onclick="showTshirtBack()">Trás</button>
-        </div>
-      </div>
-      </div> </section> <section id="about">
+  <section id="about">
     <h2 class="section-title reveal">Sobre a UrbanVault</h2>
     <p class="about-text reveal">
       A UrbanVault nasceu da cultura de rua e da paixão pelo estilo. Selecionamos apenas os melhores sneakers e roupa streetwear para que possas elevar o teu look todos os dias.  
