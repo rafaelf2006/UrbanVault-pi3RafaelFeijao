@@ -11,45 +11,47 @@ if (isset($_SESSION['user_id'])) {
 $error = "";
 $success = "";
 
-// Processar login
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+// Processar registo
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registar'])) {
+    $nome = trim($_POST['nome']);
     $email = trim($_POST['email']);
     $password = $_POST['password'];
+    $password_confirm = $_POST['password_confirm'];
 
-    if (empty($email) || empty($password)) {
+    // Validações
+    if (empty($nome) || empty($email) || empty($password) || empty($password_confirm)) {
         $error = "Por favor, preencha todos os campos!";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Email inválido!";
+    } elseif (strlen($password) < 6) {
+        $error = "A password deve ter no mínimo 6 caracteres!";
+    } elseif ($password !== $password_confirm) {
+        $error = "As passwords não coincidem!";
     } else {
-        // Buscar utilizador na base de dados
-        $query = "SELECT * FROM users WHERE email = ? AND ativo = 1";
-        $stmt = $conn->prepare($query);
+        // Verificar se email já existe
+        $check_query = "SELECT id FROM users WHERE email = ?";
+        $stmt = $conn->prepare($check_query);
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
-            
-            // Verificar password
-            if (password_verify($password, $user['password'])) {
-                // Login bem-sucedido
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_nome'] = $user['nome'];
-                $_SESSION['user_email'] = $user['email'];
-                $_SESSION['user_tipo'] = $user['tipo_usuario'];
-                
-                // Atualizar última atividade
-                $update = "UPDATE users SET ultima_atividade = NOW() WHERE id = ?";
-                $stmt_update = $conn->prepare($update);
-                $stmt_update->bind_param("i", $user['id']);
-                $stmt_update->execute();
-                
-                header("Location: index.php");
-                exit();
-            } else {
-                $error = "Email ou password incorretos!";
-            }
+        if ($result->num_rows > 0) {
+            $error = "Este email já está registado!";
         } else {
-            $error = "Email ou password incorretos!";
+            // Criar hash da password
+            $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+            // Inserir novo utilizador
+            $insert_query = "INSERT INTO users (nome, email, password, tipo_usuario, ativo) VALUES (?, ?, ?, 'cliente', 1)";
+            $stmt = $conn->prepare($insert_query);
+            $stmt->bind_param("sss", $nome, $email, $password_hash);
+
+            if ($stmt->execute()) {
+                $success = "Registo bem-sucedido! A redirecionar para login...";
+                header("refresh:2;url=login.php");
+            } else {
+                $error = "Erro ao criar conta. Tenta novamente!";
+            }
         }
     }
 }
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - UrbanVault</title>
+    <title>Registo - UrbanVault</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -78,16 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             align-items: center;
             justify-content: center;
             color: #fff;
+            padding: 20px;
         }
 
-        .login-container {
+        .register-container {
             background: #1b1b1b;
             padding: 3rem;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.5);
             width: 100%;
-            max-width: 450px;
-            margin: 20px;
+            max-width: 500px;
         }
 
         .logo {
@@ -149,6 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             color: #ddd;
         }
 
+        input[type="text"],
         input[type="email"],
         input[type="password"] {
             width: 100%;
@@ -166,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             border-color: #D2BBA0;
         }
 
-        .btn-login {
+        .btn-register {
             width: 100%;
             padding: 1rem;
             background: #D2BBA0;
@@ -179,9 +182,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             transition: 0.3s;
             text-transform: uppercase;
             letter-spacing: 1px;
+            margin-top: 1rem;
         }
 
-        .btn-login:hover {
+        .btn-register:hover {
             background: #fff;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(210, 187, 160, 0.3);
@@ -202,21 +206,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             color: #fff;
         }
 
-        .divider {
-            text-align: center;
-            margin: 1.5rem 0;
-            color: #777;
+        .password-requirements {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 0.3rem;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
+    <div class="register-container">
         <div class="logo">
             <h1>URBAN<span>VAULT</span></h1>
             <p>Streetwear Exclusivo</p>
         </div>
 
-        <h2>Login</h2>
+        <h2>Criar Conta</h2>
 
         <?php if ($error): ?>
             <div class="alert alert-error"><?php echo $error; ?></div>
@@ -228,25 +232,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
         <form method="POST" action="">
             <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <input type="text" id="nome" name="nome" placeholder="O teu nome" required value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>">
+            </div>
+
+            <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" placeholder="exemplo@email.com" required>
+                <input type="email" id="email" name="email" placeholder="exemplo@email.com" required value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <div class="password-requirements">Mínimo 6 caracteres</div>
             </div>
 
-            <button type="submit" name="login" class="btn-login">Entrar</button>
+            <div class="form-group">
+                <label for="password_confirm">Confirmar Password</label>
+                <input type="password" id="password_confirm" name="password_confirm" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" name="registar" class="btn-register">Criar Conta</button>
         </form>
 
         <div class="links">
-            <p>Não tens conta? <a href="registo.php">Regista-te aqui</a></p>
+            <p>Já tens conta? <a href="login.php">Faz login aqui</a></p>
         </div>
 
-        <div class="divider">ou</div>
-
-        <div class="links">
+        <div class="links" style="margin-top: 1rem;">
             <a href="index.php">← Voltar à loja</a>
         </div>
     </div>

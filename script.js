@@ -28,13 +28,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // LÓGICA DO HOODIE
+  // LÓGICA DO HOODIE - CAMINHOS CORRETOS
   // ==========================================
   const hoodieImages = {
-    black: { front: "mockupsUV/hoodie_black_front.png", back: "mockupsUV/hoodie_black_back.png" },
-    white: { front: "mockupsUV/hoodie_white_front.png", back: "mockupsUV/hoodie_white_back.png" },
-    green: { front: "mockupsUV/hoodie_green_front.png", back: "mockupsUV/hoodie_green_back.png" },
-    wine:  { front: "mockupsUV/hoodie_wine_front.png",  back: "mockupsUV/hoodie_wine_back.png" },
+    black: { 
+      front: "mockupsUV/blackuv/blackfront_uv.png", 
+      back: "mockupsUV/blackuv/blackback_uv.png" 
+    },
+    white: { 
+      front: "mockupsUV/whiteuv/whitefront_uv.png", 
+      back: "mockupsUV/whiteuv/whiteback_uv.png" 
+    },
+    green: { 
+      front: "mockupsUV/greenuv/greenfront_uv.png", 
+      back: "mockupsUV/greenuv/greenback_uv.png" 
+    },
+    wine: { 
+      front: "mockupsUV/wineuv/winefront_uv.png", 
+      back: "mockupsUV/wineuv/wineback_uv.png" 
+    },
   };
 
   // Variáveis de estado
@@ -76,52 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
     updateHoodieImages();
   };
 
-  // Inicializar Hoodie
-  updateHoodieImages();
-
-  // Nota: Tens de ter as imagens com estes nomes na pasta mockupsUV ou ajustar aqui
-  const tshirtImages = {
-    black: { front: "mockupsUV/tshirt_black_front.png", back: "mockupsUV/tshirt_black_back.png" },
-    white: { front: "mockupsUV/tshirt_white_front.png", back: "mockupsUV/tshirt_white_back.png" },
-  };
-
-  let currentTshirtColor = 'black';
-  let currentTshirtView = 'front';
-
-  window.updateTshirtImages = function() {
-    const frontImg = document.getElementById('tshirt-front');
-    const backImg = document.getElementById('tshirt-back');
-
-    if(!frontImg || !backImg) return; 
-
-    frontImg.src = tshirtImages[currentTshirtColor].front;
-    backImg.src = tshirtImages[currentTshirtColor].back;
-
-    if(currentTshirtView === 'front') {
-      frontImg.classList.add('active');
-      backImg.classList.remove('active');
+  // FUNÇÃO PARA TOGGLE FRONT/BACK - USA INLINE STYLES
+  window.toggleView = function(produtoId, view) {
+    var frontImg = document.getElementById('produto-' + produtoId + '-front');
+    var backImg = document.getElementById('produto-' + produtoId + '-back');
+    
+    if(!frontImg || !backImg) return;
+    
+    if(view === 'front') {
+      frontImg.style.display = 'block';
+      backImg.style.display = 'none';
     } else {
-      frontImg.classList.remove('active');
-      backImg.classList.add('active');
+      frontImg.style.display = 'none';
+      backImg.style.display = 'block';
     }
   };
-
-  window.changeTshirtColor = function(color) {
-    currentTshirtColor = color;
-    updateTshirtImages();
-  };
-
-  window.showTshirtFront = function() {
-    currentTshirtView = 'front';
-    updateTshirtImages();
-  };
-
-  window.showTshirtBack = function() {
-    currentTshirtView = 'back';
-    updateTshirtImages();
-  };
-
-  // Inicializar T-shirt
-  updateTshirtImages();
 
 });
